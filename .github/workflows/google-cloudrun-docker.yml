@@ -50,11 +50,11 @@ on:
     branches: [ "main" ]
 
 env:
-  PROJECT_ID: '${{ vars.PROJECT_ID }}' # TODO: update Google Cloud project id
-  GAR_LOCATION: '${{ vars.GAR_LOCATION }}' # TODO: update Artifact Registry location
-  SERVICE: '${{ vars.SERVICE }}' # TODO: update Cloud Run service name
-  REGION: '${{ vars.REGION }}' # TODO: update Cloud Run service region
-  IMAGE_NAME: '${{ vars.IMAGE_NAME }}' # TODO: update Cloud Run service region
+  PROJECT_ID: '${{ vars.PROJECT_ID }}'
+  GAR_LOCATION: '${{ vars.GAR_LOCATION }}'
+  SERVICE: '${{ vars.SERVICE }}'
+  REGION: '${{ vars.REGION }}'
+  IMAGE_NAME: '${{ vars.IMAGE_NAME }}'
 
 jobs:
   deploy:
@@ -102,7 +102,7 @@ jobs:
 
       - name: Deploy to Cloud Run
         id: deploy
-        uses: google-github-actions/deploy-cloudrun@v0
+        uses: google-github-actions/deploy-cloudrun@v2
         with:
           service: ${{ env.SERVICE }}
           region: ${{ env.REGION }}
