@@ -19,5 +19,4 @@ COPY src /app/src
 EXPOSE 8008
 
 # Run code
-CMD ["uvicorn", "src.pipeline.inference:app", "--host", "0.0.0.0", "--port", "8008"]
-
+ENTRYPOINT ["streamlit", "run", "src.pipeline.frontend.app.py", "--server.port=8008", "--server.address=0.0.0.0"]
