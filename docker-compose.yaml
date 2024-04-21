@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  mlapp:
+    build:
+      dockerfile: Dockerfile
+    image: churn_prediction:latest
+    restart: always
+    ports:
+      - "8008:8008"
+    environment:
+      - COMET_ML_API_KEY=${COMET_ML_API_KEY}
+      - COMET_ML_WORKSPACE=${COMET_ML_WORKSPACE}
+      - COMET_ML_MODEL_NAME=${COMET_ML_MODEL_NAME}
+      - COMET_ML_PROJECT_NAME=${COMET_ML_PROJECT_NAME}
+    volumes:
+      - .:/app
