@@ -19,4 +19,4 @@ COPY src /app/src
 EXPOSE 8080
 
 # Run code
-ENTRYPOINT ["streamlit", "run", "src.pipeline.frontend.app.py", "--server.port=8080", "--server.address=0.0.0.0"]
+CMD ["streamlit", "run", "src/frontend/app.py", "--server.port=8080"]
