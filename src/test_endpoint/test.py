@@ -25,7 +25,6 @@ data_to_send = {
     'datetime_y': '2021-01-23 18:03:34.711729620'
 }
 
-
 url = "http://127.0.0.1:8008/predict"
 response = requests.post(url, json=data_to_send)
 
