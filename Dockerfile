@@ -16,7 +16,7 @@ RUN apt-get update && \
 COPY src /app/src
 
 # Port accessible
-EXPOSE 8008
+EXPOSE 8080
 
 # Run code
-ENTRYPOINT ["streamlit", "run", "src.pipeline.frontend.app.py", "--server.port=8008", "--server.address=0.0.0.0"]
+ENTRYPOINT ["streamlit", "run", "src.pipeline.frontend.app.py", "--server.port=8080", "--server.address=0.0.0.0"]

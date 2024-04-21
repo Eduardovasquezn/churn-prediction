@@ -80,4 +80,4 @@ def predict_churn(item: CustomerData):
 
 
 if __name__ == '__main__':
-    uvicorn.run(app, host='0.0.0.0', port=8008)
+    uvicorn.run(app, host='0.0.0.0', port=8080)
