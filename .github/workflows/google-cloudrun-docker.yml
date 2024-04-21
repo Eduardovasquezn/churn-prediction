@@ -108,7 +108,7 @@ jobs:
           region: ${{ env.REGION }}
           # NOTE: If using a pre-built image, update the image name here
           image: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-          env-vars: |
+          secrets: |-
             COMET_ML_API_KEY=${{ secrets.COMET_ML_API_KEY }}
             COMET_ML_WORKSPACE=${{ secrets.COMET_ML_WORKSPACE }}
             COMET_ML_MODEL_NAME=${{ secrets.COMET_ML_MODEL_NAME }}
