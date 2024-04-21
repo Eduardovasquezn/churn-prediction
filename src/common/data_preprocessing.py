@@ -29,7 +29,11 @@ def features_to_preprocess():
 
 def preprocessing_functions(df: pd.DataFrame) -> pd.DataFrame:
     logger.info("Remove features")
-    df.drop(columns=["customerid", "datetime_x", "datetime_y"], axis=1, inplace=True)
+    cols_to_drop = ["customerid", "datetime_x", "datetime_y"]
+
+    columns_to_drop_existing = [col for col in cols_to_drop if col in df.columns]
+
+    df.drop(columns=columns_to_drop_existing, axis=1, inplace=True)
 
     logger.info("List of categorical_features features to transform...")
     numerical_features, categorical_features = features_to_preprocess()
