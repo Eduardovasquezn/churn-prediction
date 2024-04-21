@@ -54,6 +54,7 @@ env:
   GAR_LOCATION: '${{ vars.GAR_LOCATION }}' # TODO: update Artifact Registry location
   SERVICE: '${{ vars.SERVICE }}' # TODO: update Cloud Run service name
   REGION: '${{ vars.REGION }}' # TODO: update Cloud Run service region
+  IMAGE_NAME: '${{ vars.IMAGE_NAME }}' # TODO: update Cloud Run service region
 
 jobs:
   deploy:
