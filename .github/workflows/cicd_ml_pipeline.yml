@@ -21,5 +21,6 @@ jobs:
       # Run the shell script
       - name: Execute pipeline
         run: |
+          pip install -r requirements.txt
           chmod +x run_pipeline.sh
           ./run_pipeline.sh
