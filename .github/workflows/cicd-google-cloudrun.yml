@@ -48,7 +48,9 @@ name: Build and Deploy to Cloud Run
 on:
   push:
     branches: [ "main" ]
-
+    paths-ignore:
+          - 'src/pipeline/**'
+          - 'src/test_endpoint/**'
 env:
   PROJECT_ID: '${{ vars.PROJECT_ID }}'
   GAR_LOCATION: '${{ vars.GAR_LOCATION }}'
