@@ -71,5 +71,5 @@ def setup_model():
     artifact_path = artifacts_path()
     feature_names_from_model = get_feature_names_from_model(experiment=experiment,
                                                             feature_names_directory_path=artifact_path)
-
+    experiment.end()
     return model, feature_names_from_model

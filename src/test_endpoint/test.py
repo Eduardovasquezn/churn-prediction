@@ -1,3 +1,4 @@
+# This can be tested if we uncomment the code from src/pipeline/inference.py. Here, we create FastAPI.
 import requests
 
 data_to_send = {
