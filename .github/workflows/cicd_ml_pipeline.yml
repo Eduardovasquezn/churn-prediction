@@ -9,7 +9,7 @@ on:
           - '**/*.md'
           - '**/*.yml'
 jobs:
-  run_fti_pipeline:
+  run_fti_pipelinee:
     runs-on: ubuntu-latest
 
     steps:
