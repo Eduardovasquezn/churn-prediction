@@ -1,4 +1,8 @@
+import sys
+import os
 
+# Add the directory containing the src package to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 import fire
 
 from src.common.data import merge_dfs, extract_data, convert_features_to_lowercase, transform_features
@@ -21,7 +25,7 @@ def run_feature_pipeline():
     customer_info_df = transform_features(df=customer_info_df)
 
     logger.info("Merge dataframes based on common identifier...")
-    merged_dataframes = merge_dfs(dataframes, on="customerID")
+    merged_dataframes = merge_dfs(dataframes, on="customerid")
 
     # Save df
     save_df(merged_dataframes)

@@ -1,5 +1,8 @@
+import sys
 import os
 
+# Add the directory containing the src package to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from comet_ml import Experiment
 
 from src.common.data import load_and_split_data
