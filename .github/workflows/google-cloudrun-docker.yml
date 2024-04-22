@@ -124,7 +124,7 @@ jobs:
             --service-account=cloud-run@churn-prediction-421019.iam.gserviceaccount.com \
             --region ${{ env.REGION }} \
             --platform managed \
-            --set-env-vars=[COMET_ML_WORKSPACE=${{ env.COMET_ML_WORKSPACE }}, COMET_ML_MODEL_NAME=${{ env.COMET_ML_MODEL_NAME }}, COMET_ML_PROJECT_NAME=${{ env.COMET_ML_PROJECT_NAME }} ] \
+            --set-env-vars=COMET_ML_WORKSPACE=${{ env.COMET_ML_WORKSPACE }}, COMET_ML_MODEL_NAME=${{ env.COMET_ML_MODEL_NAME }}, COMET_ML_PROJECT_NAME=${{ env.COMET_ML_PROJECT_NAME }}  \
             --set-secrets=COMET_ML_API_KEY=${{ secrets.COMET_ML_API_KEY }}:1\
             --allow-unauthenticated  # Adjust flags as per your requirements
       # If required, use the Cloud Run url output in later steps
