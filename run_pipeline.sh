@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Load the .env file
+source .env
+
 # Execute feature.py
 python3 ./src/pipeline/feature.py
 

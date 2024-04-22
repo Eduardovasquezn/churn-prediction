@@ -51,6 +51,8 @@ on:
     paths-ignore:
           - 'src/pipeline/**'
           - 'src/test_endpoint/**'
+          - 'run_pipeline.sh'
+          - '**/*.md'
 env:
   PROJECT_ID: '${{ vars.PROJECT_ID }}'
   GAR_LOCATION: '${{ vars.GAR_LOCATION }}'
