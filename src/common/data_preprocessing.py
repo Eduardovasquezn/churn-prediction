@@ -1,13 +1,8 @@
-import os
-import pickle
-
 import numpy as np
 import pandas as pd
-from comet_ml import Experiment, Artifact
-from sklearn.preprocessing import MinMaxScaler, LabelEncoder
 
 from src.common.logger import get_console_logger
-from src.common.paths import artifacts_path
+
 
 logger = get_console_logger()
 

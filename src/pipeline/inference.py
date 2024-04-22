@@ -1,8 +1,6 @@
 import os
 import sys
 
-from pydantic import BaseModel
-
 from src.common.inference_utils import setup_model, CustomerData, add_missing_features
 
 # Get the directory where the script is located

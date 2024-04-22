@@ -1,13 +1,12 @@
 import os
 
 from comet_ml import Experiment
-from sklearn.model_selection import KFold
 
 from src.common.data import load_and_split_data
 from src.common.data_preprocessing import preprocessing_functions
 from src.common.logger import get_console_logger
 from src.common.model_registry import save_model_to_model_registry, save_feature_names_from_model
-from src.common.modelling import get_model, evaluate_and_log_predictions, \
+from src.common.modelling import evaluate_and_log_predictions, \
     optimize_optuna, fit_best_model
 from src.common.save_data import save_training_data
 

@@ -1,7 +1,5 @@
 
 import logging
-from typing import Optional
-
 
 def get_console_logger() -> logging.Logger:
     """
