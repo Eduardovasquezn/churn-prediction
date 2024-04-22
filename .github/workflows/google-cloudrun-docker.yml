@@ -103,21 +103,30 @@ jobs:
 
       # END - Docker auth and build
 
+#      - name: Deploy to Cloud Run
+#        id: deploy
+#        uses: google-github-actions/deploy-cloudrun@v2
+#        with:
+#          service: ${{ env.SERVICE }}
+#          region: ${{ env.REGION }}
+##          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+#          image: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+#          env_vars: |-
+#            COMET_ML_WORKSPACE=${{ env.COMET_ML_WORKSPACE }}
+#            COMET_ML_MODEL_NAME=${{ env.COMET_ML_MODEL_NAME }}
+#            COMET_ML_PROJECT_NAME=${{ env.COMET_ML_PROJECT_NAME }}
+#          secrets: |-
+#            COMET_ML_API_KEY=${{ secrets.COMET_ML_API_KEY }}:1
       - name: Deploy to Cloud Run
-        id: deploy
-        uses: google-github-actions/deploy-cloudrun@v2
-        with:
-          service: ${{ env.SERVICE }}
-          region: ${{ env.REGION }}
-#          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
-          image: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-          env_vars: |-
-            COMET_ML_WORKSPACE=${{ env.COMET_ML_WORKSPACE }}
-            COMET_ML_MODEL_NAME=${{ env.COMET_ML_MODEL_NAME }}
-            COMET_ML_PROJECT_NAME=${{ env.COMET_ML_PROJECT_NAME }}
-          secrets: |-
-            COMET_ML_API_KEY=${{ secrets.COMET_ML_API_KEY }}:1
-
+        run: |-
+          gcloud run deploy ${{ env.SERVICE }} \
+            --image ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            --service-account=cloud-run@churn-prediction-421019.iam.gserviceaccount.com \
+            --region ${{ env.REGION }} \
+            --platform managed \
+            --set-env-vars=[COMET_ML_WORKSPACE=${{ env.COMET_ML_WORKSPACE }}, COMET_ML_MODEL_NAME=${{ env.COMET_ML_MODEL_NAME }}, COMET_ML_PROJECT_NAME=${{ env.COMET_ML_PROJECT_NAME }} ] \
+            --set-secrets=COMET_ML_API_KEY=${{ secrets.COMET_ML_API_KEY }}:1\
+            --allow-unauthenticated  # Adjust flags as per your requirements
       # If required, use the Cloud Run url output in later steps
       - name: Show Output
         run: echo ${{ steps.deploy.outputs.url }}
