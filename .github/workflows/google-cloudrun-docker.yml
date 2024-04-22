@@ -127,7 +127,7 @@ jobs:
             --set-env-vars COMET_ML_WORKSPACE=${{ env.COMET_ML_WORKSPACE }} \
             --set-env-vars COMET_ML_MODEL_NAME=${{ env.COMET_ML_MODEL_NAME }} \
             --set-env-vars COMET_ML_PROJECT_NAME=${{ env.COMET_ML_PROJECT_NAME }} \
-            --update-secrets=projects/559585202887/secrets/COMET_ML_API_KEY=COMET_ML_API_KEY:1 \
+            --update-secrets=projects/559585202887/secrets=COMET_ML_API_KEY:1 \
             --allow-unauthenticated  # Adjust flags as per your requirements
       # If required, use the Cloud Run url output in later steps
       - name: Show Output
