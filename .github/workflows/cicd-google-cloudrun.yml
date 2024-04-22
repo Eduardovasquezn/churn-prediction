@@ -53,7 +53,7 @@ on:
           - 'src/test_endpoint/**'
           - 'run_pipeline.sh'
           - '**/*.md'
-          - '**/*.yml'
+          - 'cicd_ml_pipeline.yml'
 env:
   PROJECT_ID: '${{ vars.PROJECT_ID }}'
   GAR_LOCATION: '${{ vars.GAR_LOCATION }}'

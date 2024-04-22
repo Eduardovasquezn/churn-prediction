@@ -7,9 +7,9 @@ on:
     paths-ignore:
           - 'src/frontend/**'
           - '**/*.md'
-          - '**/*.yml'
+          - 'cicd-google-cloudrun.yml'
 jobs:
-  run_fti_pipelinee:
+  run_fti_pipeline:
     runs-on: ubuntu-latest
 
     steps:
