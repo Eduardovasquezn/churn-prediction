@@ -1,5 +1,6 @@
 import sys
 import os
+
 # Add the directory containing the src package to the Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from comet_ml import Experiment
@@ -61,10 +62,10 @@ if __name__ == '__main__':
     from argparse import ArgumentParser
 
     parser = ArgumentParser()
-    parser.add_argument('--model_type', type=str, default='xgboost')
+    parser.add_argument('--model_type', type=str, default='random_forest')
     parser.add_argument('--version', type=str, default='1.0.0')
-    parser.add_argument('--tag', type=str, default='xgboost')
-    parser.add_argument('--status', type=str, default='Production')
+    parser.add_argument('--tag', type=str, default='random_forest')
+    parser.add_argument('--status', type=str, default='Staging')
     args = parser.parse_args()
 
     logger.info('Training model')
