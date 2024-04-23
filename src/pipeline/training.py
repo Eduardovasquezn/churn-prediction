@@ -62,9 +62,9 @@ if __name__ == '__main__':
     from argparse import ArgumentParser
 
     parser = ArgumentParser()
-    parser.add_argument('--model_type', type=str, default='random_forest')
+    parser.add_argument('--model_type', type=str, default='lgbm')
     parser.add_argument('--version', type=str, default='1.0.0')
-    parser.add_argument('--tag', type=str, default='random_forest')
+    parser.add_argument('--tag', type=str, default='lgbm')
     parser.add_argument('--status', type=str, default='Staging')
     args = parser.parse_args()
 
