@@ -59,8 +59,7 @@ def get_hyperparameters(model_type, trial):
     elif model_type == 'random_forest':
         hyperparameters = {
             'n_estimators': trial.suggest_int('n_estimators', 100, 500),
-            'max_depth': trial.suggest_int('max_depth', 2, 9),
-            'max_features': trial.suggest_categorical("max_features", ['auto', 'sqrt'])
+            'max_depth': trial.suggest_int('max_depth', 2, 9)
         }
     elif model_type == 'lgbm':
         hyperparameters = {
