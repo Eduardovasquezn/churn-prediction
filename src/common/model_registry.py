@@ -9,8 +9,13 @@ from src.common.logger import get_console_logger
 from src.common.paths import model_path, artifacts_path
 
 import time
+from dotenv import load_dotenv
+load_dotenv()
 
+comet_ml_model_name = os.getenv('COMET_ML_MODEL_NAME')
+comet_ml_api_key = os.getenv('COMET_ML_API_KEY')
 logger = get_console_logger()
+
 
 
 def save_model_to_model_registry(model: BaseEstimator, version: str, tag: str, status: str, experiment: Experiment,
@@ -34,13 +39,15 @@ def save_model_to_model_registry(model: BaseEstimator, version: str, tag: str, s
         pickle.dump(model, f)
 
     logger.info("Log model to Comet ML")
-    experiment.log_model("champion_model", champion_model_path)
+    experiment.log_model(comet_ml_model_name, champion_model_path)
 
     logger.info("Register model in model registry")
-    experiment.register_model("champion_model")
+    experiment.register_model(comet_ml_model_name)
 
     set_model_status_and_tags(comet_ml_api_key=comet_ml_api_key, comet_ml_workspace=comet_ml_workspace,
                               version=version, status=status, tag=tag)
+
+    experiment.end()
 
 
 def set_model_status_and_tags(comet_ml_api_key: str, comet_ml_workspace: str,
@@ -59,13 +66,13 @@ def set_model_status_and_tags(comet_ml_api_key: str, comet_ml_workspace: str,
     None
     """
     # Sleep for 5 seconds
-    logger.info("Sleep for 5 seconds")
-    time.sleep(5)
+    logger.info("Sleep for 10 seconds")
+    time.sleep(10)
 
     logger.info("Connect to Comet ML API")
     api = API(api_key=comet_ml_api_key)
     logger.info("Get model from Registry")
-    model = api.get_model(workspace=comet_ml_workspace, model_name="champion_model")
+    model = api.get_model(workspace=comet_ml_workspace, model_name=comet_ml_model_name)
     logger.info("Set status")
     # TODO: if status already assigned, skip it
     model.set_status(version=version, status=status)
@@ -132,7 +139,7 @@ def save_feature_names_from_model(x_train: pd.DataFrame, experiment: Experiment)
 
 #TODO: create a function that reads from an existing experiment rather than creating a new one
 def get_feature_names_from_model(experiment: Experiment, feature_names_directory_path: str,
-                                 artifact_name: str = "feature_names_model"):
+                                 artifact_name: str = "feature_names_model", api_key: str = comet_ml_api_key):
     """
     Load the feature names artifact from Comet ML and save it locally.
 
@@ -154,5 +161,9 @@ def get_feature_names_from_model(experiment: Experiment, feature_names_directory
     logger.info("Load feature names artifact")
     with open(feature_names_path, 'rb') as f:
         feature_names_from_model = pickle.load(f)
+
+    # Workaround for deleting the dummy experiment created during the download
+    api = API(api_key=api_key)
+    api.delete_experiment(experiment_key=experiment.get_key())
 
     return feature_names_from_model

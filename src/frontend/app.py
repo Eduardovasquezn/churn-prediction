@@ -1,7 +1,6 @@
 import os
 import sys
 
-from pydantic import BaseModel
 
 # Get the directory where the script is located
 script_directory = os.path.dirname(os.path.abspath(__file__))
@@ -9,9 +8,8 @@ script_directory = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(script_directory, '..', '..'))
 sys.path.append(project_root)
 
-from comet_ml import Experiment
 
-from src.common.inference_features import add_missing_features, CustomerData
+from src.common.inference_utils import add_missing_features
 from src.common.data_preprocessing import preprocessing_functions
 from src.common.paths import artifacts_path
 from src.common.logger import get_console_logger
@@ -94,21 +92,22 @@ def main():
 
 
     if st.button('Predict'):
+        with st.spinner("Processing..."):
 
-        logger.info("Transform to df...")
-        df = pd.DataFrame(customer_data, index=[0])
+            logger.info("Transform to df...")
+            df = pd.DataFrame(customer_data, index=[0])
 
-        logger.info("Preprocessing...")
-        df = preprocessing_functions(df=df)
+            logger.info("Preprocessing...")
+            df = preprocessing_functions(df=df)
 
-        # missing columns levels train and test.
-        add_missing_features(df=df, feature_names_from_model=feature_names_from_model)
+            # missing columns levels train and test.
+            add_missing_features(df=df, feature_names_from_model=feature_names_from_model)
 
-        logger.info("Calculate predictions")
-        prediction = model.predict(df[feature_names_from_model])[0]
-        prediction_formatted = "Churn 😢" if prediction == 1 else "Not Churn 😊"
+            logger.info("Calculate predictions")
+            prediction = model.predict(df[feature_names_from_model])[0]
+            prediction_formatted = "Churn 😢" if prediction == 1 else "Not Churn 😊"
 
-        st.write(f"<span style='font-size:25px'>{prediction_formatted}</span>", unsafe_allow_html=True)
+            st.write(f"<span style='font-size:25px'>{prediction_formatted}</span>", unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()

@@ -7,7 +7,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score, f1_score, precision_score
 from sklearn.model_selection import KFold
 from xgboost import XGBClassifier
-from typing import Callable
+from typing import Callable, List
 
 from src.common.data_preprocessing import preprocessing_functions
 from src.common.logger import get_console_logger
@@ -37,6 +37,7 @@ def get_model(model_type, **kwargs) -> Callable:
         raise ValueError("Invalid model_type. Choose from 'xgboost', 'random_forest', 'lgbm'.")
 
     return model
+
 
 def get_hyperparameters(model_type, trial):
     """
@@ -70,6 +71,7 @@ def get_hyperparameters(model_type, trial):
 
     return hyperparameters
 
+
 def evaluate_and_log_predictions(best_estimator, x_test, y_test, experiment):
     """
     Calculate predictions on the test set, compute ROC score, and upload confusion matrix to Comet ML.
@@ -98,11 +100,8 @@ def evaluate_and_log_predictions(best_estimator, x_test, y_test, experiment):
 
 
 def optimize_optuna(n_trials: int, model_type: str, x_train: pd.DataFrame, y_train: pd.DataFrame,
-              experiment: Experiment):
-
-
+                    experiment: Experiment, tag: List[str]):
     def objective(trial):
-
         # Load hyperparameters
         hyperparameters = get_hyperparameters(model_type=model_type, trial=trial)
 
@@ -137,19 +136,18 @@ def optimize_optuna(n_trials: int, model_type: str, x_train: pd.DataFrame, y_tra
         logger.info("Metrics:")
         roc_score_mean = np.array(roc_auc_scores).mean()
         logger.info(f"ROC score: {roc_score_mean}")
-        experiment.log_metric('ROC - cross validation', roc_score_mean)
+        experiment.log_metric('ROC - cross validation', roc_score_mean, step=trial.number)
 
         f1_score_mean = np.array(f1_scores).mean()
         logger.info(f"F1 score: {f1_score_mean}")
-        experiment.log_metric('F1 - cross validation', f1_score_mean)
+        experiment.log_metric('F1 - cross validation', f1_score_mean, step=trial.number)
 
         precision_score_mean = np.array(precision_scores).mean()
         logger.info(f"Precision score: {precision_score_mean}")
-        experiment.log_metric('Precision - cross validation', precision_score_mean)
+        experiment.log_metric('Precision - cross validation', precision_score_mean, step=trial.number)
 
         # Return the mean score
         return roc_score_mean
-
 
     logger.info('Start hyperparameters search...')
     study = optuna.create_study(direction='maximize')
@@ -164,8 +162,10 @@ def optimize_optuna(n_trials: int, model_type: str, x_train: pd.DataFrame, y_tra
 
     experiment.log_metric('Best ROC - cross validation', best_auc)
     experiment.log_parameters(best_params)
+    experiment.add_tags([tag])
 
     return best_params
+
 
 def fit_best_model(model_type: str, x_train: pd.DataFrame, y_train: pd.DataFrame, **kwargs) -> Callable:
     # Specify model with respective hyperparameters
