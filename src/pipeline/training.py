@@ -22,10 +22,9 @@ logger = get_console_logger()
 comet_ml_api_key = os.getenv("COMET_ML_API_KEY", "")
 comet_ml_workspace = os.getenv("COMET_ML_WORKSPACE", "")
 comet_ml_project_name = os.getenv("COMET_ML_PROJECT_NAME", "")
+comet_ml_model_name = os.getenv('COMET_ML_MODEL_NAME')
 
-
-def run_training_pipeline(model_type, version, tag, status):
-
+def run_training_pipeline(model_type, tag, status):
     # Train-test split
     x_train, x_test, y_train, y_test = load_and_split_data()
 
@@ -45,8 +44,8 @@ def run_training_pipeline(model_type, version, tag, status):
     save_feature_names_from_model(x_train=x_train, experiment=experiment)
 
     logger.info("Training the model")
-    best_hyperparameters = optimize_optuna(n_trials=10, model_type=model_type, x_train=x_train, y_train=y_train,
-                                  experiment=experiment)
+    best_hyperparameters = optimize_optuna(n_trials=2, model_type=model_type, x_train=x_train, y_train=y_train,
+                                           experiment=experiment, tag=tag)
 
     logger.info(f"best_params: {best_hyperparameters}")
 
@@ -55,18 +54,19 @@ def run_training_pipeline(model_type, version, tag, status):
 
     evaluate_and_log_predictions(best_estimator=model, x_test=x_test, y_test=y_test, experiment=experiment)
 
-    save_model_to_model_registry(model=model, version=version, tag=tag, status=status, experiment=experiment,
-                                 comet_ml_api_key=comet_ml_api_key, comet_ml_workspace=comet_ml_workspace)
+    save_model_to_model_registry(model=model, tag=tag, status=status, experiment=experiment,
+                                 model_name=comet_ml_model_name ,comet_ml_api_key=comet_ml_api_key,
+                                 comet_ml_workspace=comet_ml_workspace)
+
 
 if __name__ == '__main__':
     from argparse import ArgumentParser
 
     parser = ArgumentParser()
     parser.add_argument('--model_type', type=str, default='lgbm')
-    parser.add_argument('--version', type=str, default='1.0.0')
     parser.add_argument('--tag', type=str, default='lgbm')
     parser.add_argument('--status', type=str, default='Staging')
     args = parser.parse_args()
 
     logger.info('Training model')
-    run_training_pipeline(model_type=args.model_type, version=args.version, tag=args.tag, status=args.status)
+    run_training_pipeline(model_type=args.model_type, tag=args.tag, status=args.status)

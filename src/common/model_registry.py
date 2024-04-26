@@ -10,16 +10,16 @@ from src.common.paths import model_path, artifacts_path
 
 import time
 from dotenv import load_dotenv
+
 load_dotenv()
 
-comet_ml_model_name = os.getenv('COMET_ML_MODEL_NAME')
 comet_ml_api_key = os.getenv('COMET_ML_API_KEY')
+
 logger = get_console_logger()
 
 
-
-def save_model_to_model_registry(model: BaseEstimator, version: str, tag: str, status: str, experiment: Experiment,
-                                 comet_ml_api_key: str, comet_ml_workspace: str) -> None:
+def save_model_to_model_registry(model: BaseEstimator, tag: str, status: str, experiment: Experiment,
+                                 model_name: str , comet_ml_api_key: str, comet_ml_workspace: str) -> None:
     """
     Register the best model to the Comet Model Registry.
 
@@ -39,19 +39,23 @@ def save_model_to_model_registry(model: BaseEstimator, version: str, tag: str, s
         pickle.dump(model, f)
 
     logger.info("Log model to Comet ML")
-    experiment.log_model(comet_ml_model_name, champion_model_path)
+    experiment.log_model(model_name, champion_model_path)
 
     logger.info("Register model in model registry")
-    experiment.register_model(comet_ml_model_name)
+    experiment.register_model(model_name)
 
-    set_model_status_and_tags(comet_ml_api_key=comet_ml_api_key, comet_ml_workspace=comet_ml_workspace,
-                              version=version, status=status, tag=tag)
+    logger.info("Get experiment ID")
+    experiment_id = experiment.id
+    # Set status and tag
+    set_model_status_and_tags(comet_ml_api_key=comet_ml_api_key, workspace=comet_ml_workspace,
+                              model_name=model_name,
+                              experiment_id=experiment_id, status=status, tag=tag)
 
     experiment.end()
 
 
-def set_model_status_and_tags(comet_ml_api_key: str, comet_ml_workspace: str,
-                              version: str, status: str, tag: str) -> None:
+def set_model_status_and_tags(comet_ml_api_key: str, workspace: str, model_name: str,
+                              experiment_id: str, status: str, tag: str) -> None:
     """
     Update model status and add tags in the Comet Model Registry.
 
@@ -65,19 +69,27 @@ def set_model_status_and_tags(comet_ml_api_key: str, comet_ml_workspace: str,
     Returns:
     None
     """
-    # Sleep for 5 seconds
+    # Sleep for 10 seconds
     logger.info("Sleep for 10 seconds")
     time.sleep(10)
 
     logger.info("Connect to Comet ML API")
     api = API(api_key=comet_ml_api_key)
     logger.info("Get model from Registry")
-    model = api.get_model(workspace=comet_ml_workspace, model_name=comet_ml_model_name)
+    model = api.get_model(workspace=workspace, model_name=model_name)
+    logger.info("Get model details")
+    model_details = api.get_registry_model_details(workspace=workspace, registry_name=model_name)['versions']
+    model_version = [
+        md['version']
+        for md in model_details
+        if md['experimentModel']['experimentKey'] == experiment_id
+    ]
+
     logger.info("Set status")
-    # TODO: if status already assigned, skip it
-    model.set_status(version=version, status=status)
+    model.set_status(version=model_version, status=status)
+
     logger.info("Add tags to the model")
-    model.add_tag(version=version, tag=tag)
+    model.add_tag(version=str(model_version[0]), tag=tag)
 
 
 def load_model_from_model_registry(
@@ -137,7 +149,8 @@ def save_feature_names_from_model(x_train: pd.DataFrame, experiment: Experiment)
     logger.info("Log feature names")
     experiment.log_artifact(artifact)
 
-#TODO: create a function that reads from an existing experiment rather than creating a new one
+
+# TODO: create a function that reads from an existing experiment rather than creating a new one
 def get_feature_names_from_model(experiment: Experiment, feature_names_directory_path: str,
                                  artifact_name: str = "feature_names_model", api_key: str = comet_ml_api_key):
     """
