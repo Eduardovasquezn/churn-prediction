@@ -21,6 +21,7 @@ jobs:
         with:
           python-version: '3.10'
       - name: cache virtualenv
+        id: cache_env
         uses: actions/cache@v3
         with:
           path: ~/.cache/pip
@@ -29,7 +30,7 @@ jobs:
              ${{ runner.os }}-pip-
       - name: Install dependencies
         shell: bash
-        if: steps.cache-venv.outputs.cache-hit != 'true'
+        if: steps.cache_env.outputs.cache-hit != 'true'
         run: |
           python -m venv ./.venv
           source ./.venv/bin/activate
