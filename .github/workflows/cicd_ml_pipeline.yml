@@ -28,7 +28,7 @@ jobs:
          restore-keys: ${{ runner.os }}-pip-
       - name: Install dependencies
         shell: bash
-        if: steps.cache_env.outputs.cache-hit != 'true'
+#        if: steps.cache_env.outputs.cache-hit != 'true'
         run: |
           python -m venv ./.venv
           source ./.venv/bin/activate
