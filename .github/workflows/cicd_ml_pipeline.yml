@@ -30,11 +30,12 @@ jobs:
 
       - name: Install dependencies
         shell: bash
+        if: steps.cache_env.outputs.cache-hit != 'true'
         run: |
           python -m venv ./.venv
           source ./.venv/bin/activate
           python -m pip install -r requirements.txt
-        if: steps.cache_env.outputs.cache-hit != 'true'
+
       # Run the shell script
       - name: Execute pipeline
         run: |
