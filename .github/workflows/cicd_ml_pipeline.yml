@@ -37,7 +37,7 @@ jobs:
       # Run the shell script
       - name: Execute pipeline
         run: |
-          source ./.venv/bin/activate
+          . .venv/bin/activate
           echo "${{ secrets.ENV_FILE }}" > .env
           chmod +x run_pipeline.sh
           ./run_pipeline.sh
