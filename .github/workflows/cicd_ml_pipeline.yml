@@ -36,7 +36,6 @@ jobs:
       # Run the shell script
       - name: Execute pipeline
         run: |
-          echo "Cache hit status - ${{ steps.cache_env.outputs.cache-hit}}"; pip list packages
           . .venv/bin/activate
           echo "${{ secrets.ENV_FILE }}" > .env
           chmod +x run_pipeline.sh
