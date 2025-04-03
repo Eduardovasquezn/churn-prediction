@@ -38,6 +38,5 @@ jobs:
         run: |
           . .venv/bin/activate
           echo "${{ secrets.ENV_FILE }}" > .env
-          echo "PYTHONPATH=$PYTHONPATH:$(pwd)/" >> $GITHUB_ENV
           chmod +x run_pipeline.sh
           ./run_pipeline.sh
