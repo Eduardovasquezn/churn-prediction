@@ -1,15 +1,17 @@
-import sys
-import os
-
-# Add the directory containing the src package to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 import fire
 
-from src.common.data import merge_dfs, extract_data, convert_features_to_lowercase, transform_features
-from src.common.logger import get_console_logger
-from src.common.save_data import save_df
+from src.common import (
+    merge_dfs,
+    extract_data,
+    convert_features_to_lowercase,
+    transform_features,
+)
+from src.common import get_console_logger
+from src.common import save_df
 
 logger = get_console_logger()
+
+
 def run_feature_pipeline():
 
     # Extract data
@@ -29,7 +31,6 @@ def run_feature_pipeline():
 
     # Save df
     save_df(merged_dataframes)
-
 
 
 if __name__ == "__main__":

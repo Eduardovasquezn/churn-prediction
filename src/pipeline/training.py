@@ -1,17 +1,16 @@
-import sys
 import os
-
-# Add the directory containing the src package to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from comet_ml import Experiment
 
 from src.common.data import load_and_split_data
-from src.common.data_preprocessing import preprocessing_functions
-from src.common.logger import get_console_logger
-from src.common.model_registry import save_model_to_model_registry, save_feature_names_from_model
-from src.common.modelling import evaluate_and_log_predictions, \
-    optimize_optuna, fit_best_model
-from src.common.save_data import save_training_data
+from src.common import preprocessing_functions
+from src.common import get_console_logger
+from src.common import save_model_to_model_registry, save_feature_names_from_model
+from src.common.modelling import (
+    evaluate_and_log_predictions,
+    optimize_optuna,
+    fit_best_model,
+)
+from src.common import save_training_data
 
 from dotenv import load_dotenv
 
@@ -22,7 +21,8 @@ logger = get_console_logger()
 comet_ml_api_key = os.getenv("COMET_ML_API_KEY", "")
 comet_ml_workspace = os.getenv("COMET_ML_WORKSPACE", "")
 comet_ml_project_name = os.getenv("COMET_ML_PROJECT_NAME", "")
-comet_ml_model_name = os.getenv('COMET_ML_MODEL_NAME')
+comet_ml_model_name = os.getenv("COMET_ML_MODEL_NAME")
+
 
 def run_training_pipeline(model_type, tag, status):
     # Train-test split
@@ -32,8 +32,9 @@ def run_training_pipeline(model_type, tag, status):
     experiment = Experiment(
         api_key=comet_ml_api_key,
         workspace=comet_ml_workspace,
-        project_name=comet_ml_project_name
+        project_name=comet_ml_project_name,
     )
+    logger.info(f"experiment: {experiment}")
 
     logger.info("Saving training data in temp path and uploading artifact...")
     save_training_data(x_train=x_train, y_train=y_train, experiment=experiment)
@@ -44,29 +45,45 @@ def run_training_pipeline(model_type, tag, status):
     save_feature_names_from_model(x_train=x_train, experiment=experiment)
 
     logger.info("Training the model")
-    best_hyperparameters = optimize_optuna(n_trials=2, model_type=model_type, x_train=x_train, y_train=y_train,
-                                           experiment=experiment, tag=tag)
+    best_hyperparameters = optimize_optuna(
+        n_trials=2,
+        model_type=model_type,
+        x_train=x_train,
+        y_train=y_train,
+        experiment=experiment,
+        tag=tag,
+    )
 
     logger.info(f"best_params: {best_hyperparameters}")
 
     logger.info("Fit model with best hyperparameters")
-    model = fit_best_model(model_type=model_type, x_train=x_train, y_train=y_train, **best_hyperparameters)
+    model = fit_best_model(
+        model_type=model_type, x_train=x_train, y_train=y_train, **best_hyperparameters
+    )
 
-    evaluate_and_log_predictions(best_estimator=model, x_test=x_test, y_test=y_test, experiment=experiment)
+    evaluate_and_log_predictions(
+        best_estimator=model, x_test=x_test, y_test=y_test, experiment=experiment
+    )
 
-    save_model_to_model_registry(model=model, tag=tag, status=status, experiment=experiment,
-                                 model_name=comet_ml_model_name ,comet_ml_api_key=comet_ml_api_key,
-                                 comet_ml_workspace=comet_ml_workspace)
+    save_model_to_model_registry(
+        model=model,
+        tag=tag,
+        status=status,
+        experiment=experiment,
+        model_name=comet_ml_model_name,
+        comet_ml_api_key=comet_ml_api_key,
+        comet_ml_workspace=comet_ml_workspace,
+    )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from argparse import ArgumentParser
 
     parser = ArgumentParser()
-    parser.add_argument('--model_type', type=str, default='lgbm')
-    parser.add_argument('--tag', type=str, default='lgbm')
-    parser.add_argument('--status', type=str, default='Staging')
+    parser.add_argument("--model_type", type=str, default="lgbm")
+    parser.add_argument("--tag", type=str, default="lgbm")
+    parser.add_argument("--status", type=str, default="Staging")
     args = parser.parse_args()
 
-    logger.info('Training model')
+    logger.info("Training model")
     run_training_pipeline(model_type=args.model_type, tag=args.tag, status=args.status)

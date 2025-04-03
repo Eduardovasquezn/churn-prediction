@@ -4,8 +4,8 @@ import tempfile
 import pandas as pd
 from comet_ml import Artifact, Experiment
 
-from src.common.logger import get_console_logger
-from src.common.paths import data_path
+from src.common import get_console_logger
+from src.common import data_path
 
 logger = get_console_logger()
 
@@ -24,13 +24,16 @@ def save_df(df: pd.DataFrame) -> None:
     data_directory_path = data_path()
 
     logger.info("Save merged dataframe")
-    df.to_parquet(os.path.join(data_directory_path, 'merged_df.parquet'))
+    df.to_parquet(os.path.join(data_directory_path, "merged_df.parquet"))
+
 
 # Reuse data produced in their experimentation pipeline, and allow it to be tracked, versioned, consumed, and analyzed
 # in a managed way.
 # Iterate on their datasets over time, track which model used which version of the dataset, and schedule
 # model re-training.
-def save_training_data(x_train: pd.DataFrame, y_train: pd.DataFrame, experiment: Experiment) -> None:
+def save_training_data(
+    x_train: pd.DataFrame, y_train: pd.DataFrame, experiment: Experiment
+) -> None:
     """
     Save training data to a Parquet file and log it as an artifact to the Comet.ml experiment.
 

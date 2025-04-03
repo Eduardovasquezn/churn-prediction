@@ -3,11 +3,12 @@ import os
 import pandas as pd
 from pydantic import BaseModel
 
-from src.common.logger import get_console_logger
-from src.common.model_registry import load_model_from_model_registry, get_feature_names_from_model
-from src.common.paths import artifacts_path
+from src.common import get_console_logger
+from src.common import load_model_from_model_registry, get_feature_names_from_model
+from src.common import artifacts_path
 
 logger = get_console_logger()
+
 
 class CustomerData(BaseModel):
     customerid: str
@@ -56,10 +57,11 @@ def setup_model():
     comet_ml_project_name = os.getenv("COMET_ML_PROJECT_NAME", "")
 
     from comet_ml import Experiment
+
     experiment = Experiment(
         api_key=comet_ml_api_key,
         workspace=comet_ml_workspace,
-        project_name=comet_ml_project_name
+        project_name=comet_ml_project_name,
     )
 
     model = load_model_from_model_registry(
@@ -69,7 +71,8 @@ def setup_model():
     )
 
     artifact_path = artifacts_path()
-    feature_names_from_model = get_feature_names_from_model(experiment=experiment,
-                                                            feature_names_directory_path=artifact_path)
+    feature_names_from_model = get_feature_names_from_model(
+        experiment=experiment, feature_names_directory_path=artifact_path
+    )
     experiment.end()
     return model, feature_names_from_model

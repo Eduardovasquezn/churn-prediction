@@ -3,8 +3,8 @@ import os
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-from src.common.logger import get_console_logger
-from src.common.paths import data_path
+from src.common import get_console_logger
+from src.common import data_path
 
 logger = get_console_logger()
 
@@ -18,18 +18,20 @@ def extract_data() -> pd.DataFrame:
     """
 
     logger.info("Fetching demography data...")
-    demography_df = pd.read_csv("https://repo.hops.works/dev/davit/churn/demography.csv")
+    demography_df = pd.read_csv(
+        "https://repo.hops.works/dev/davit/churn/demography.csv"
+    )
 
     logger.info("Fetching customer data...")
     customer_info_df = pd.read_csv(
         "https://repo.hops.works/dev/davit/churn/customer_info.csv",
-        parse_dates=['datetime']
+        parse_dates=["datetime"],
     )
 
     logger.info("Fetching subscription data...")
     subscriptions_df = pd.read_csv(
         "https://repo.hops.works/dev/davit/churn/subscriptions.csv",
-        parse_dates=['datetime']
+        parse_dates=["datetime"],
     )
 
     return demography_df, customer_info_df, subscriptions_df
@@ -46,7 +48,7 @@ def convert_columns_to_numeric(df: pd.DataFrame, columns: list) -> pd.DataFrame:
     Returns:
     pd.DataFrame: DataFrame with specified columns converted to numeric.
     """
-    df[columns] = df[columns].apply(pd.to_numeric, errors='coerce')
+    df[columns] = df[columns].apply(pd.to_numeric, errors="coerce")
     return df
 
 
@@ -66,7 +68,9 @@ def replace_nan_values(df: pd.DataFrame, columns: list, value: int = 0) -> pd.Da
     return df
 
 
-def replace_categorical_values(df: pd.DataFrame, columns: list, mapping: dict) -> pd.DataFrame:
+def replace_categorical_values(
+    df: pd.DataFrame, columns: list, mapping: dict
+) -> pd.DataFrame:
     """
     Replace categorical values in specified columns with specified mapping.
 
@@ -90,7 +94,7 @@ def transform_features(df: pd.DataFrame) -> pd.DataFrame:
     df = replace_nan_values(df, columns=["totalcharges"])
 
     logger.info("Replace values in the churn column with 0 for No and 1 for Yes")
-    df = replace_categorical_values(df, columns=['churn'], mapping={"No": 0, "Yes": 1})
+    df = replace_categorical_values(df, columns=["churn"], mapping={"No": 0, "Yes": 1})
 
     return df
 
@@ -119,8 +123,12 @@ def convert_features_to_lowercase(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def load_and_split_data(parquet_file_path: str = "merged_df.parquet", target_column: str = "churn",
-                        test_size: float = 0.2, random_state: int = 10):
+def load_and_split_data(
+    parquet_file_path: str = "merged_df.parquet",
+    target_column: str = "churn",
+    test_size: float = 0.2,
+    random_state: int = 10,
+):
     """
     Load data from a Parquet file, perform train-test split, and return the split datasets.
 
@@ -141,6 +149,10 @@ def load_and_split_data(parquet_file_path: str = "merged_df.parquet", target_col
 
     logger.info("Splitting data")
     x_train, x_test, y_train, y_test = train_test_split(
-        df.drop(target_column, axis=1), df[target_column], test_size=test_size, random_state=random_state)
+        df.drop(target_column, axis=1),
+        df[target_column],
+        test_size=test_size,
+        random_state=random_state,
+    )
 
     return x_train, x_test, y_train, y_test

@@ -1,15 +1,6 @@
-import os
-import sys
-
-# Get the directory where the script is located
-script_directory = os.path.dirname(os.path.abspath(__file__))
-# Add the project's root directory to the Python path
-project_root = os.path.abspath(os.path.join(script_directory, '..', '..'))
-sys.path.append(project_root)
-
-from src.common.inference_utils import setup_model, CustomerData, add_missing_features
-from src.common.data_preprocessing import preprocessing_functions
-from src.common.logger import get_console_logger
+from src.common import setup_model, CustomerData, add_missing_features
+from src.common import preprocessing_functions
+from src.common import get_console_logger
 
 import pandas as pd
 
@@ -22,17 +13,18 @@ load_dotenv()
 
 logger = get_console_logger()
 
-# app = FastAPI()
+app = FastAPI()
 
 model, feature_names_from_model = setup_model()
 
-# @app.post('/predict')
-def predict_churn(item: CustomerData):
+
+@app.post("/predict")
+def predict_churn(data: CustomerData):
     logger.info("Get data")
-    # data = item.dict()
+    data = data.model_dump()
 
     logger.info("Transform to df...")
-    df = pd.DataFrame(item, index=[0])
+    df = pd.DataFrame(data, index=[0])
 
     logger.info("Preprocessing...")
     df = preprocessing_functions(df=df)
@@ -49,31 +41,5 @@ def predict_churn(item: CustomerData):
     return {"prediction": prediction_formatted}
 
 
-if __name__ == '__main__':
-    item = {
-    'customerid': '3164-YAXFY',
-    'gender': 'Male',
-    'seniorcitizen': 0,
-    'dependents': 'No',
-    'partner': 'No',
-    'contract': 'Month-to-month',
-    'tenure': 57,
-    'paymentmethod': 'Electronic check',
-    'paperlessbilling': 'Yes',
-    'monthlycharges': 53.75,
-    'totalcharges': 3196.0,
-    'datetime_x': '2021-01-23 18:03:34.711729620',
-    'deviceprotection': 'Yes',
-    'onlinebackup': 'No',
-    'onlinesecurity': 'Yes',
-    'internetservice': 'DSL',
-    'multiplelines': 'No phone service',
-    'phoneservice': 'No',
-    'techsupport': 'No',
-    'streamingmovies': 'Yes',
-    'streamingtv': 'Yes',
-    'datetime_y': '2021-01-23 18:03:34.711729620'
-}
-    prediction = predict_churn(item)
-
-    # uvicorn.run(app, host='0.0.0.0', port=8080)
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8080)
