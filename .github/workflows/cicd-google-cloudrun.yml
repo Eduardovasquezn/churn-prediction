@@ -126,13 +126,14 @@ jobs:
         run: |-
           gcloud run deploy ${{ env.SERVICE }} \
             --image ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
-            --service-account=cloud-run@churn-prediction-421019.iam.gserviceaccount.com \
+            --service-account=cloud-run@churn-prediction-455706.iam.gserviceaccount.com \
             --region ${{ env.REGION }} \
             --platform managed \
             --set-env-vars COMET_ML_WORKSPACE=${{ env.COMET_ML_WORKSPACE }} \
             --set-env-vars COMET_ML_MODEL_NAME=${{ env.COMET_ML_MODEL_NAME }} \
             --set-env-vars COMET_ML_PROJECT_NAME=${{ env.COMET_ML_PROJECT_NAME }} \
             --update-secrets=COMET_ML_API_KEY=COMET_API_KEY:1 \
+            --memory 1G \
             --allow-unauthenticated  # Adjust flags as per your requirements
       # If required, use the Cloud Run url output in later steps
       - name: Show Output

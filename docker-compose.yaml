@@ -13,5 +13,3 @@ services:
       - COMET_ML_WORKSPACE=${COMET_ML_WORKSPACE}
       - COMET_ML_MODEL_NAME=${COMET_ML_MODEL_NAME}
       - COMET_ML_PROJECT_NAME=${COMET_ML_PROJECT_NAME}
-    volumes:
-      - .:/app

@@ -14,30 +14,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Set up Python
-        id: setup_python
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - name: "Set up Python"
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-#      - name: cache virtualenv
-#        id: cache_env
-#        uses: actions/cache@v3
-#        with:
-#         path: ~/.cache/pip
-#         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }} # save hash with the layer that has the requirements
-#         restore-keys: ${{ runner.os }}-pip-
-      - name: Install dependencies
-        shell: bash
-#        if: steps.cache_env.outputs.cache-hit != 'true'
-        run: |
-          python -m venv ./.venv
-          source ./.venv/bin/activate
-          python -m pip install -r requirements.txt
+          python-version-file: ".python-version"
       # Run the shell script
       - name: Execute pipeline
         run: |
-          . .venv/bin/activate
+          source .venv/bin/activate
           echo "${{ secrets.ENV_FILE }}" > .env
-          echo "PYTHONPATH=$PYTHONPATH:$(pwd)/" >> $GITHUB_ENV
           chmod +x run_pipeline.sh
           ./run_pipeline.sh

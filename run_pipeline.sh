@@ -3,11 +3,13 @@
 # Load the .env file
 source .env
 
+export PYTHONPATH=$(pwd):$PYTHONPATH
+
 # Execute feature.py
-python3 ./src/pipeline/feature.py
+uv run python ./src/pipeline/feature.py
 
 # Execute training.py
-python3 ./src/pipeline/training.py
+uv run python ./src/pipeline/training.py
 
 # Execute inference.py
-python3 ./src/pipeline/inference.py
+uv run python ./src/pipeline/inference.py
