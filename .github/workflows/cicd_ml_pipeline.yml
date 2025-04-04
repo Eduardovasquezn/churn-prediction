@@ -7,6 +7,7 @@ on:
     paths-ignore:
           - 'src/frontend/**'
           - '**/*.md'
+          - 'media/**'
           - '**/cicd-google-cloudrun.yml'
 jobs:
   run_fti_pipeline:
