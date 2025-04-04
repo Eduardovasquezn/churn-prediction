@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source .venv/bin/activate
+
 # Load the .env file
 source .env
 
