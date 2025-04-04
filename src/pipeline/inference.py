@@ -1,3 +1,4 @@
+import os
 from src.common import setup_model, CustomerData, add_missing_features
 from src.common import preprocessing_functions
 from src.common import get_console_logger
@@ -41,5 +42,5 @@ def predict_churn(data: CustomerData):
     return {"prediction": prediction_formatted}
 
 
-if __name__ == "__main__":
+if __name__ == "__main__" and os.getenv("CI") != "true":
     uvicorn.run(app, host="0.0.0.0", port=8080)
