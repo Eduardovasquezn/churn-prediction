@@ -3,7 +3,7 @@
 ## Overview
 This project implements a full end-to-end machine learning workflow for churn prediction. It follows a structured approach covering feature engineering, model training, and inference. The workflow integrates several tools and frameworks to ensure scalability, reproducibility, and efficient model deployment.
 
-## Architecture Diagram
+## Architecture
 ![End-to-End Workflow Diagram](media/diagram.png)
 
 ## Feature Pipeline
