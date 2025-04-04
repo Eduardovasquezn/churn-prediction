@@ -6,6 +6,17 @@ This project implements a full end-to-end machine learning workflow for churn pr
 ## Architecture
 ![End-to-End Workflow Diagram](media/diagram.png)
 
+### Tech Stack Used
+- **Experiment Tracking & Model Registry**: Comet ML
+- **Hyperparameter Tuning**: Optuna
+- **Model Serving**: FastAPI
+- **Frontend**: Streamlit
+- **Deployment**: Google Cloud Run
+- **Containerization**: Docker, Docker Compose
+- **CI/CD**: GitHub Actions
+- **Package Management**: `uv`
+- **Infrastructure & Secrets Management**: GCP Artifact Registry, Secret Manager
+  
 ## Feature Pipeline
 - Extracts **demographic data**, **subscription data**, and **customer data**.
 - Performs **feature engineering** to enhance predictive power.
