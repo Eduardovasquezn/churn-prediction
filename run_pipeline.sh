@@ -4,10 +4,10 @@
 source .env
 
 # Execute feature.py
-uv run python ./src/pipeline/feature.py
+python ./src/pipeline/feature.py
 
 # Execute training.py
-uv run python ./src/pipeline/training.py
+python ./src/pipeline/training.py
 
 # Execute inference.py
-uv run python ./src/pipeline/inference.py
+python ./src/pipeline/inference.py
