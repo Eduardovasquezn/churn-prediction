@@ -30,7 +30,7 @@ jobs:
       # Run the shell script
       - name: Execute pipeline
         run: |
-          source .venv/bin/activate
-          echo "PYTHONPATH=$(pwd)/src:$PYTHONPATH" >> $GITHUB_ENV
+          export PYTHONPATH=$(pwd)/src:$PYTHONPATH
+          echo "PYTHONPATH=$PYTHONPATH"
           echo "${{ secrets.ENV_FILE }}" > .env
           source ./run_pipeline.sh
