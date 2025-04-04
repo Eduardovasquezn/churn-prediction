@@ -30,7 +30,8 @@ jobs:
       # Run the shell script
       - name: Execute pipeline
         run: |
-          export PYTHONPATH=$(pwd)/src:$PYTHONPATH
+          source .venv/bin/activate  # Activate virtual environment
+          export PYTHONPATH=$(pwd)/$PYTHONPATH
           echo "PYTHONPATH=$PYTHONPATH"
           echo "${{ secrets.ENV_FILE }}" > .env
           source ./run_pipeline.sh
