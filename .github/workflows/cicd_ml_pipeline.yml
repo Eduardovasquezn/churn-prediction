@@ -32,6 +32,7 @@ jobs:
         run: |
           source .venv/bin/activate  # Activate virtual environment
           export PYTHONPATH=$(pwd)/$PYTHONPATH
-          echo "PYTHONPATH=$PYTHONPATH"
           echo "${{ secrets.ENV_FILE }}" > .env
           source ./run_pipeline.sh
+        with:
+          credentials_json: '${{ secrets.COMET_API_KEY }}'
